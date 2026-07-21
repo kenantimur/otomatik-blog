@@ -1,1 +1,42 @@
+name: Günlük Blog Yazısı
 
+on:
+  schedule:
+    # 07:00 UTC = 10:00 Türkiye saati (TR yıl boyu UTC+3, yaz saati uygulaması yok)
+    - cron: '0 7 * * *'
+  workflow_dispatch: {}   # Actions sekmesinden elle de tetikleyebilirsiniz (test için)
+
+permissions:
+  contents: write   # state.json dosyasını geri commit'leyebilmek için gerekli
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repoyu al
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Bağımlılıkları yükle
+        run: pip install -r requirements.txt
+
+      - name: İçerik üret ve WordPress'e yayınla
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          WP_URL: ${{ secrets.WP_URL }}
+          WP_USERNAME: ${{ secrets.WP_USERNAME }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: python generate_and_post.py
+
+      - name: Konu durumunu kaydet (bir sonraki gün için)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add state.json
+          git diff --staged --quiet || git commit -m "Konu durumu güncellendi ($(date -u +%F))"
+          git push
