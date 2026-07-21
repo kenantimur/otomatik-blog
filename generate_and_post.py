@@ -20,7 +20,7 @@ WP_APP_PASSWORD = os.environ["WP_APP_PASSWORD"]
 PEXELS_API_KEY = os.environ.get("PEXELS_API_KEY")  # yoksa görsel adımı atlanır
 
 # Ücretsiz katmanda en yüksek günlük kotaya sahip model
-GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL = "gemini-flash-latest"
 GEMINI_ENDPOINT = (
     f"https://generativelanguage.googleapis.com/v1beta/models/"
     f"{GEMINI_MODEL}:generateContent?key={GEMINI_API_KEY}"
