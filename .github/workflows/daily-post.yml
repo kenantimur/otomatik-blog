@@ -2,12 +2,11 @@ name: Günlük Blog Yazısı
 
 on:
   schedule:
-    # 07:00 UTC = 10:00 Türkiye saati (TR yıl boyu UTC+3, yaz saati uygulaması yok)
     - cron: '0 7 * * *'
-  workflow_dispatch: {}   # Actions sekmesinden elle de tetikleyebilirsiniz (test için)
+  workflow_dispatch: {}
 
 permissions:
-  contents: write   # state.json dosyasını geri commit'leyebilmek için gerekli
+  contents: write
 
 jobs:
   post:
